@@ -2,7 +2,7 @@
 
 with lib;
 
-let version = "6.0.10";
+let version = "6.0.12";
 in
 fetchurl rec {
   name = "Oracle_VM_VirtualBox_Extension_Pack-${version}.vbox-extpack";
