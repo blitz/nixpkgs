@@ -23,7 +23,7 @@ let
   # guest-additions/default.nix as well.
   main = "1y6j73axjns8ng3m8zs31zwx71wmm91n6vrhdpxphx16jf518djj";
   version = "6.0.10";
-in stdenv.mkDerivation {
+in stdenv.mkDerivation rec {
   pname = "virtualbox";
   inherit version;
 
@@ -99,6 +99,14 @@ in stdenv.mkDerivation {
       src/VBox/HostDrivers/adpctl/VBoxNetAdpCtl.cpp
   '';
 
+  configureParam = ["--disable-kmods"]
+                   ++ optional headless "--build-headless"
+                   ++ optional (!javaBindings) "--disable-java"
+                   ++ optional (!pythonBindings) "--disable-python"
+                   ++ optional (!pulseSupport) "--disable-pulse"
+                   ++ optional (!enableHardening) "--disable-hardening"
+                   ++ optional (!enable32bitGuests) "--disable-vmmraw";
+
   # first line: ugly hack, and it isn't yet clear why it's a problem
   configurePhase = ''
     NIX_CFLAGS_COMPILE=$(echo "$NIX_CFLAGS_COMPILE" | sed 's,\-isystem ${lib.getDev stdenv.cc.libc}/include,,g')
@@ -127,14 +135,7 @@ in stdenv.mkDerivation {
     ''}
     LOCAL_CONFIG
 
-    ./configure \
-      ${optionalString headless "--build-headless"} \
-      ${optionalString (!javaBindings) "--disable-java"} \
-      ${optionalString (!pythonBindings) "--disable-python"} \
-      ${optionalString (!pulseSupport) "--disable-pulse"} \
-      ${optionalString (!enableHardening) "--disable-hardening"} \
-      ${optionalString (!enable32bitGuests) "--disable-vmmraw"} \
-      --disable-kmods
+    ./configure ${lib.concatStringsSep " " configureParam}
     sed -e 's@PKG_CONFIG_PATH=.*@PKG_CONFIG_PATH=${libIDL}/lib/pkgconfig:${glib.dev}/lib/pkgconfig ${libIDL}/bin/libIDL-config-2@' \
         -i AutoConfig.kmk
     sed -e 's@arch/x86/@@' \
