@@ -370,6 +370,8 @@
   ./services/logging/fluentd.nix
   ./services/logging/graylog.nix
   ./services/logging/heartbeat.nix
+  ./services/logging/journal-remote.nix
+  ./services/logging/journal-upload.nix
   ./services/logging/journalbeat.nix
   ./services/logging/journaldriver.nix
   ./services/logging/journalwatch.nix
