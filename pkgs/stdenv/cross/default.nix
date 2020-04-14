@@ -64,7 +64,7 @@ in lib.init bootStages ++ [
              # when there is a C compiler and everything should be fine.
              then throw "no C compiler provided for this platform"
            else if crossSystem.useLLVM or false
-             then buildPackages.llvmPackages_8.lldClang
+             then buildPackages.llvmPackages_9.lldClang
            else buildPackages.gcc;
 
       extraNativeBuildInputs = old.extraNativeBuildInputs
