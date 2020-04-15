@@ -94,7 +94,7 @@ let
       patches =
         map (p: p.patch) kernelPatches
         # Required for deterministic builds along with some postPatch magic.
-        ++ optional (stdenv.lib.versionAtLeast version "4.13") ./randstruct-provide-seed.patch
+        ## ++ optional (stdenv.lib.versionAtLeast version "4.13") ./randstruct-provide-seed.patch
         # Fixes determinism by normalizing metadata for the archive of kheaders
         ++ optional (stdenv.lib.versionAtLeast version "5.2" && stdenv.lib.versionOlder version "5.4") ./gen-kheaders-metadata.patch;
 
@@ -107,18 +107,18 @@ let
         sed -i scripts/ld-version.sh -e "s|/usr/bin/awk|${buildPackages.gawk}/bin/awk|"
       '';
 
-      postPatch = ''
-        # Set randstruct seed to a deterministic but diversified value. Note:
-        # we could have instead patched gen-random-seed.sh to take input from
-        # the buildFlags, but that would require also patching the kernel's
-        # toplevel Makefile to add a variable export. This would be likely to
-        # cause future patch conflicts.
-        if [ -f scripts/gcc-plugins/gen-random-seed.sh ]; then
-          substituteInPlace scripts/gcc-plugins/gen-random-seed.sh \
-            --replace NIXOS_RANDSTRUCT_SEED \
-            $(echo ${randstructSeed}${src} ${configfile} | sha256sum | cut -d ' ' -f 1 | tr -d '\n')
-        fi
-      '';
+      # postPatch = ''
+      #   # Set randstruct seed to a deterministic but diversified value. Note:
+      #   # we could have instead patched gen-random-seed.sh to take input from
+      #   # the buildFlags, but that would require also patching the kernel's
+      #   # toplevel Makefile to add a variable export. This would be likely to
+      #   # cause future patch conflicts.
+      #   if [ -f scripts/gcc-plugins/gen-random-seed.sh ]; then
+      #     substituteInPlace scripts/gcc-plugins/gen-random-seed.sh \
+      #       --replace NIXOS_RANDSTRUCT_SEED \
+      #       $(echo ${randstructSeed}${src} ${configfile} | sha256sum | cut -d ' ' -f 1 | tr -d '\n')
+      #   fi
+      # '';
 
       configurePhase = ''
         runHook preConfigure
