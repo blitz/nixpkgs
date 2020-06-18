@@ -68,6 +68,7 @@ in
   corerad = handleTest ./corerad.nix {};
   couchdb = handleTest ./couchdb.nix {};
   deluge = handleTest ./deluge.nix {};
+  dhcp-failover = handleTest ./dhcp-failover.nix {};
   dhparams = handleTest ./dhparams.nix {};
   dnscrypt-proxy2 = handleTestOn ["x86_64-linux"] ./dnscrypt-proxy2.nix {};
   dnscrypt-wrapper = handleTestOn ["x86_64-linux"] ./dnscrypt-wrapper {};
