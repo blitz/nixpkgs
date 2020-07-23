@@ -309,6 +309,7 @@ in
   sonarr = handleTest ./sonarr.nix {};
   strongswan-swanctl = handleTest ./strongswan-swanctl.nix {};
   sudo = handleTest ./sudo.nix {};
+  sudo-ldap = handleTest ./sudo-ldap.nix {};
   switchTest = handleTest ./switch-test.nix {};
   sympa = handleTest ./sympa.nix {};
   syncthing-init = handleTest ./syncthing-init.nix {};
