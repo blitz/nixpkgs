@@ -31,6 +31,16 @@ import ./make-test-python.nix {
           objectClass: organizationalUnit
           ou: users
 
+          dn: ou=groups,dc=example
+          objectClass: organizationalUnit
+          ou: groups
+
+          dn: cn=admins,ou=groups,dc=example
+          objectClass: posixGroup
+          cn: admins
+          gidNumber: 10000
+          memberUid: adam
+
           dn: uid=adam,ou=users,dc=example
           objectClass: top
           objectClass: account
@@ -59,6 +69,9 @@ import ./make-test-python.nix {
         base = "dc=example";
         server = "ldap://server/";
 
+        # TODO: It should work with and without this.
+        # daemon.enable = true;
+
         bind = {
           distinguishedName = bindDn;
           passwordFile = "/etc/ldap.pw";
@@ -75,6 +88,15 @@ import ./make-test-python.nix {
       security.pam.services.login = {
         logFailures = true;
         makeHomeDir = true;
+      };
+
+      security.sudo = {
+        enable = true;
+
+        extraRules = [
+          { groups = [ "admins" ]; commands = [ "ALL" ]; }
+        ];
+
       };
 
       # Tools
