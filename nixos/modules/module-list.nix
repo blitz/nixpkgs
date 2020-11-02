@@ -51,6 +51,7 @@
   ./hardware/cpu/intel-sgx.nix
   ./hardware/corectrl.nix
   ./hardware/digitalbitbox.nix
+  ./hardware/decklink.nix
   ./hardware/device-tree.nix
   ./hardware/gkraken.nix
   ./hardware/flirc.nix
