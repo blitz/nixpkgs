@@ -1,5 +1,5 @@
 { stdenv, fetchurl, openssl, pkgconfig, libnl
-, dbus, readline ? null, pcsclite ? null
+, dbus, readline ? null, pcsclite ? null, eapolTest ? true
 }:
 
 with stdenv.lib;
@@ -19,6 +19,10 @@ stdenv.mkDerivation rec {
       url = "https://w1.fi/security/2019-7/0001-AP-Silently-ignore-management-frame-from-unexpected-.patch";
       sha256 = "15xjyy7crb557wxpx898b5lnyblxghlij0xby5lmj9hpwwss34dz";
     })
+    # Avoids a -Werror build failure when eapol_test is enabled. This
+    # patch can be dropped when upgrading to a version larger than
+    # 2.9.
+    ./0001-Interworking-Check-NULL-string-to-avoid-compiler-war.patch
   ];
 
   # TODO: Patch epoll so that the dbus actually responds
@@ -65,6 +69,8 @@ stdenv.mkDerivation rec {
     CONFIG_CTRL_IFACE_DBUS=y
     CONFIG_CTRL_IFACE_DBUS_NEW=y
     CONFIG_CTRL_IFACE_DBUS_INTRO=y
+  '' + optionalString false ''
+    CONFIG_EAPOL_TEST=y
   '' + (if readline != null then ''
     CONFIG_READLINE=y
   '' else ''
@@ -89,6 +95,10 @@ stdenv.mkDerivation rec {
 
   nativeBuildInputs = [ pkgconfig ];
 
+  postBuild = optionalString eapolTest ''
+    make eapol_test
+  '';
+
   postInstall = ''
     mkdir -p $out/share/man/man5 $out/share/man/man8
     cp -v "doc/docbook/"*.5 $out/share/man/man5/
@@ -102,6 +112,8 @@ stdenv.mkDerivation rec {
 
     rm $out/share/man/man8/wpa_priv.8
     install -Dm444 wpa_supplicant.conf $out/share/doc/wpa_supplicant/wpa_supplicant.conf.example
+  '' + optionalString eapolTest ''
+    install -Dm555 eapol_test $out/sbin
   '';
 
   meta = with stdenv.lib; {

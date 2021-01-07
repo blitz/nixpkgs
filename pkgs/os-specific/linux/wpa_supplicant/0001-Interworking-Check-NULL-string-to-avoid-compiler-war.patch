@@ -1,0 +1,40 @@
+From 6807eee9ca95cc02e735462de2d052fcc7d1148a Mon Sep 17 00:00:00 2001
+From: Masashi Honma <masashi.honma@gmail.com>
+Date: Fri, 18 Oct 2019 11:04:18 +0900
+Subject: [PATCH] Interworking: Check NULL string to avoid compiler warning
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Fix warning by gcc 9.2.1.
+
+interworking.c: In function ‘interworking_home_sp_cred’:
+interworking.c:2263:3: warning: ‘%s’ directive argument is null [-Wformat-overflow=]
+ 2263 |   wpa_msg(wpa_s, MSG_DEBUG,
+      |   ^~~~~~~~~~~~~~~~~~~~~~~~~
+ 2264 |    "Interworking: Search for match with SIM/USIM domain %s",
+      |    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 2265 |    realm);
+      |    ~~~~~~
+
+Signed-off-by: Masashi Honma <masashi.honma@gmail.com>
+---
+ wpa_supplicant/interworking.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/wpa_supplicant/interworking.c b/wpa_supplicant/interworking.c
+index 0261bb7b8fd7..d8e9c95a739d 100644
+--- a/wpa_supplicant/interworking.c
++++ b/wpa_supplicant/interworking.c
+@@ -2262,7 +2262,7 @@ int interworking_home_sp_cred(struct wpa_supplicant *wpa_s,
+ 			realm++;
+ 		wpa_msg(wpa_s, MSG_DEBUG,
+ 			"Interworking: Search for match with SIM/USIM domain %s",
+-			realm);
++			realm ? realm : "[NULL]");
+ 		if (realm &&
+ 		    domain_name_list_contains(domain_names, realm, 1))
+ 			return 1;
+-- 
+2.29.2
+
