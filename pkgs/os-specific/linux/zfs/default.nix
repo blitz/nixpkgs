@@ -26,14 +26,8 @@ let
     , rev ? "zfs-${version}"
     , isUnstable ? false
     , incompatibleKernelVersion ? null }:
-    if buildKernel &&
-      (incompatibleKernelVersion != null) &&
-        versionAtLeast kernel.version incompatibleKernelVersion then
-       throw ''
-         Linux v${kernel.version} is not yet supported by zfsonlinux v${version}.
-         ${stdenv.lib.optionalString (!isUnstable) "Try zfsUnstable or set the NixOS option boot.zfs.enableUnstable."}
-       ''
-    else stdenv.mkDerivation {
+
+    stdenv.mkDerivation {
       name = "zfs-${configFile}-${version}${optionalString buildKernel "-${kernel.version}"}";
 
       src = fetchFromGitHub {
@@ -182,7 +176,14 @@ let
         homepage = "https://zfsonlinux.org/";
         license = licenses.cddl;
         platforms = platforms.linux;
-        maintainers = with maintainers; [ jcumming wizeman fpletz globin ];
+        maintainers = with maintainers; [ hmenke jcumming jonringer wizeman fpletz globin mic92 ];
+        broken = if
+          buildKernel && (incompatibleKernelVersion != null) && versionAtLeast kernel.version incompatibleKernelVersion
+          then builtins.trace ''
+            Linux v${kernel.version} is not yet supported by zfsonlinux v${version}.
+            ${lib.optionalString (!isUnstable) "Try zfsUnstable or set the NixOS option boot.zfs.enableUnstable."}
+          '' true
+          else false;
       };
     };
 in {
