@@ -306,6 +306,12 @@ in
         '';
       };
 
+      debug = mkOption {
+        type = bool;
+        default = false;
+        description = "Enable debugging mode. Among other things, it logs all commands to stderr.";
+      }
+
       logTo = mkOption {
         type = str;
         default = "syslog::daemon";
@@ -451,6 +457,7 @@ in
           User = "root";
           ExecStart = let
             args = concatStringsSep " " [
+              (optionalString cfg.debug "--debug")
               "--logto=${cfg.logTo}"
               "--loglevel=${cfg.logLevel}"
               (optionalString cfg.noDestroy "--nodestroy")
