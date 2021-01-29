@@ -427,6 +427,7 @@ in
   yq = handleTest ./yq.nix {};
   zfs = handleTest ./zfs.nix {};
   zigbee2mqtt = handleTest ./zigbee2mqtt.nix {};
+  znapzend = handleTest ./znapzend.nix {};
   zoneminder = handleTest ./zoneminder.nix {};
   zookeeper = handleTest ./zookeeper.nix {};
   zsh-history = handleTest ./zsh-history.nix {};
