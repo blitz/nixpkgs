@@ -8348,6 +8348,8 @@ in {
 
   statsmodels = callPackage ../development/python-modules/statsmodels { };
 
+  stestr = callPackage ../development/python-modules/stestr { };
+
   stdiomask = callPackage ../development/python-modules/stdiomask { };
 
   stem = callPackage ../development/python-modules/stem { };
