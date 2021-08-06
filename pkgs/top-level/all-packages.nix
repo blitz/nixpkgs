@@ -32279,6 +32279,8 @@ with pkgs;
 
   tusk = callPackage ../applications/office/tusk { };
 
+  tuxedo-control-center = callPackage ../os-specific/linux/tuxedo-control-center { };
+
   trufflehog = callPackage ../tools/security/trufflehog { };
 
   tvbrowser-bin = callPackage ../applications/misc/tvbrowser/bin.nix { };
