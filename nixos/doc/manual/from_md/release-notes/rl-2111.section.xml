@@ -207,6 +207,14 @@
           <link linkend="opt-services.postfixadmin.enable">postfixadmin</link>.
         </para>
       </listitem>
+      <listitem>
+        <para>
+          <link xlink:href="https://github.com/tuxedocomputers/tuxedo-control-center">tuxedo-control-center</link>,
+          a graphical user interface to control fan and power management
+          on Tuxedo laptops. Available as
+          <link linkend="opt-hardware.tuxedo-control-center.enable">hardware.tuxedo-control-center</link>.
+        </para>
+      </listitem>
     </itemizedlist>
   </section>
   <section xml:id="sec-release-21.11-incompatibilities">
