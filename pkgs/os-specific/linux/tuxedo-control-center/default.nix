@@ -1,22 +1,24 @@
-{ pkgs, lib, stdenv, makeDesktopItem, desktop-file-utils,
+{ lib, stdenv, makeDesktopItem, desktop-file-utils,
 
   python,
 
-  makeWrapper, nodejs, electron_9
+  makeWrapper, nodejs, electron_9, nodePackages, fetchFromGitHub
 }:
 
 let
+  packageName = "tuxedo-control-center-../../os-specific/linux/tuxedo-control-center";
+
   baseName = "tuxedo-control-center";
   version = "1.0.14";
 
-  packageName = with lib; concatStrings (map (entry: (concatStrings (mapAttrsToList (key: value: "${key}-${value}") entry))) (importJSON ./package.json));
+  tuxNodePackages = nodePackages."${packageName}".override {
+    src = fetchFromGitHub {
+      owner = "tuxedocomputers";
+      repo = "tuxedo-control-center";
+      rev = "v${version}";
+      sha256 = "00gpsvjbli9f6vj31lbs7flmcz215r91iz6rg1kbzklc3y5k2ifj";
+    };
 
-  baseNodePackages = (import ./node-composition.nix {
-    inherit pkgs nodejs;
-    inherit (stdenv.hostPlatform) system;
-  });
-
-  nodePackages = baseNodePackages."${packageName}".override {
     # Electron tries to download itself if this isn't set. We don't
     # like that in nix so let's prevent it.
     #
@@ -44,7 +46,7 @@ in
 
 stdenv.mkDerivation rec {
   name = "${baseName}-${version}";
-  src = "${nodePackages}/lib/node_modules/tuxedo-control-center/";
+  src = "${tuxNodePackages}/lib/node_modules/tuxedo-control-center/";
 
   nativeBuildInputs = [
     desktop-file-utils # for desktop-file-validate
