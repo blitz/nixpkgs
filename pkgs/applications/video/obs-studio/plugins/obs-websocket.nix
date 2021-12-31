@@ -4,24 +4,34 @@
 , fetchpatch
 , cmake
 , qtbase
+, qtsvg
 , obs-studio
 , asio_1_10
 , websocketpp
+, nlohmann_json
 }:
 
 stdenv.mkDerivation rec {
   pname = "obs-websocket";
-  version = "4.9.1";
+  version = "5.0.0-alpha3";
 
   src = fetchFromGitHub {
     owner = "Palakis";
     repo = "obs-websocket";
     rev = version;
-    sha256 = "sha256-XCiSNWTiA/u+3IbYlhIc5bCjKjLHDRVjYIG5MEoYnr0=";
+    sha256 = "Lr6SBj5rRTAWmn9Tnlu4Sl7SAkOCRCTP6sFWSp4xB+I=";
+    fetchSubmodules = true;
   };
 
   nativeBuildInputs = [ cmake ];
-  buildInputs = [ qtbase obs-studio asio_1_10 websocketpp ];
+  buildInputs = [
+    qtbase
+    qtsvg
+    obs-studio
+    asio_1_10
+    websocketpp
+    nlohmann_json
+  ];
 
   dontWrapQtApps = true;
 
