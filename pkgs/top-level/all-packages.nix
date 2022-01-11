@@ -3504,6 +3504,8 @@ with pkgs;
 
   oneshot = callPackage ../tools/networking/oneshot { };
 
+  onnxruntime = callPackage ../development/libraries/onnxruntime { };
+
   xkbd = callPackage ../applications/misc/xkbd { };
 
   libpsm2 = callPackage ../os-specific/linux/libpsm2 { };
