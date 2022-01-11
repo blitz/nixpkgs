@@ -9,4 +9,5 @@
   wlrobs = callPackage ./wlrobs.nix {};
   looking-glass-obs = callPackage ./looking-glass-obs.nix {};
   obs-nvfbc = callPackage ./obs-nvfbc.nix {};
+  obs-backgroundremoval = callPackage ./obs-backgroundremoval.nix {};
 }
