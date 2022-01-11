@@ -1,16 +1,16 @@
-{ stdenv, fetchFromGitHub, glibcLocales
+{ stdenv, lib, fetchFromGitHub, glibcLocales
 , cmake, python3, libpng, zlib
 }:
 
 stdenv.mkDerivation rec {
   pname = "onnxruntime";
-  version = "1.3.1";
+  version = "1.10.0";
 
   src = fetchFromGitHub {
     owner = "microsoft";
     repo = "onnxruntime";
     rev = "v${version}";
-    sha256 = "0rbk1jbfc447x2wybz2hsba6w1ij0fq21996l52cqv39898lvy9d";
+    sha256 = "V56JOMT74oxB3VQ0dKH2Nc6d3OmjPGqBLZ3yDcrcOKA=";
     # TODO: use nix-versions of grpc, onnx, eigen, googletest, etc.
     # submodules increase src size and compile times significantly
     # not currently feasible due to how integrated cmake build is with git
@@ -44,8 +44,13 @@ stdenv.mkDerivation rec {
     "-Donnxruntime_ENABLE_LTO=ON"
   ];
 
+  # postPatch = ''
+  #   # Missing include for use of malloc()
+  #   sed -i '/^#include <memory>/a #include <cstdlib>' onnxruntime/test/onnx/heap_buffer.h
+  # '';
+
   # ContribOpTest.StringNormalizerTest sets locale to en_US.UTF-8"
-  preCheck = stdenv.lib.optionalString stdenv.isLinux ''
+  preCheck = lib.optionalString stdenv.isLinux ''
     export LOCALE_ARCHIVE="${glibcLocales}/lib/locale/locale-archive"
   '';
   doCheck = true;
@@ -56,7 +61,7 @@ stdenv.mkDerivation rec {
 
   enableParallelBuilding = true;
 
-  meta = with stdenv.lib; {
+  meta = with lib; {
     description = "Cross-platform, high performance scoring engine for ML models";
     longDescription = ''
       ONNX Runtime is a performance-focused complete scoring engine
