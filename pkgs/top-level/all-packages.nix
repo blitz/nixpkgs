@@ -27043,6 +27043,10 @@ with pkgs;
   linuxPackages_testing = linuxKernel.packages.linux_testing;
   linux_testing = linuxKernel.kernels.linux_testing;
 
+  # Kernel with Rust Support
+  linuxPackages_rust = linuxKernel.packages.linux_rust;
+  linux_rust = linuxKernel.kernels.linux_rust;
+  
   linuxPackages_testing_bcachefs = linuxKernel.packages.linux_testing_bcachefs;
   linux_testing_bcachefs = linuxKernel.kernels.linux_testing_bcachefs;
 

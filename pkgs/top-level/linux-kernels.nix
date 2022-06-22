@@ -8,6 +8,8 @@
 , dontRecurseIntoAttrs
 , stdenv
 , stdenvNoCC
+, clang13Stdenv
+, rust-bindgen-0_56-kernel
 , newScope
 , lib
 , fetchurl
@@ -200,6 +202,16 @@ in {
         kernelPatches.request_key_helper
         kernelPatches.make-maple-state-reusable-after-mas_empty_area
         kernelPatches.fix-em-ice-bonding
+      ];
+    };
+
+    linux_rust = callPackage ../os-specific/linux/kernel/linux-rust.nix {
+      stdenv = clang13Stdenv;
+      rust-bindgen-kernel = rust-bindgen-0_56-kernel;
+
+      kernelPatches = [
+        kernelPatches.bridge_stp_helper
+        kernelPatches.request_key_helper
       ];
     };
 
@@ -613,6 +625,8 @@ in {
     # Intentionally lacks recurseIntoAttrs, as -rc kernels will quite likely break out-of-tree modules and cause failed Hydra builds.
     linux_testing = packagesFor kernels.linux_testing;
     linux_testing_bcachefs = recurseIntoAttrs (packagesFor kernels.linux_testing_bcachefs);
+
+    linux_rust = packagesFor kernels.linux_rust;
 
     linux_hardened = recurseIntoAttrs (hardenedPackagesFor packageAliases.linux_default.kernel { });
 
