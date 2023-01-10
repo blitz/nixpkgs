@@ -1,20 +1,30 @@
-{ stdenv, requireFile, lib,
+{ gcc7Stdenv, requireFile, lib,
   libcxx, libcxxabi
 }:
 
-stdenv.mkDerivation rec {
+let
+  libcxx7 = libcxx.override {
+    stdenv = gcc7Stdenv;
+  };
+
+  libcxxabi7 = libcxxabi.override {
+    stdenv = gcc7Stdenv;
+  };
+
+in
+gcc7Stdenv.mkDerivation rec {
   pname = "blackmagic-desktop-video";
-  major = "12.2";
-  version = "${major}a12";
+  major = "12.4.1";
+  version = "${major}a15";
 
   buildInputs = [
-    libcxx libcxxabi
+    libcxx7 libcxxabi7
   ];
 
   src = requireFile {
     name = "Blackmagic_Desktop_Video_Linux_${major}.tar.gz";
-    url = "https://www.blackmagicdesign.com/support/download/33abc1034cd54cf99101f9acd2edd93d/Linux";
-    sha256 = "62954a18b60d9040aa4a959dff30ac9c260218ef78d6a63cbb243788f7abc05f";
+    url = "https://www.blackmagicdesign.com/support/download/17722a6d499b4431a31f29b32a937656/Linux";
+    sha256 = "d5363b15d305e5484fa62af16b1bd11a296746442dc82c4481d5b193bbbabf3e";
   };
 
   setSourceRoot = ''
@@ -29,7 +39,6 @@ stdenv.mkDerivation rec {
     cp -r $sourceRoot/usr/share/doc/desktopvideo $out/share/doc
     cp $sourceRoot/usr/lib/*.so $out/lib
     cp $sourceRoot/usr/lib/systemd/system/DesktopVideoHelper.service $out/lib/systemd/system
-    ln -s ${libcxx}/lib/* ${libcxxabi}/lib/* $out/lib
     cp $sourceRoot/usr/lib/blackmagic/DesktopVideo/libgcc_s.so.1 $out/lib/
     cp $sourceRoot/usr/lib/blackmagic/DesktopVideo/DesktopVideoHelper $out/bin/
 
@@ -40,8 +49,8 @@ stdenv.mkDerivation rec {
 
 
   postFixup = ''
-    patchelf --set-interpreter ${stdenv.cc.bintools.dynamicLinker} \
-      --set-rpath "$out/lib:${lib.makeLibraryPath [ libcxx libcxxabi ]}" \
+    patchelf --set-interpreter ${gcc7Stdenv.cc.bintools.dynamicLinker} \
+      --set-rpath "$out/lib:${lib.makeLibraryPath [ libcxx7 libcxxabi7 ]}" \
       $out/bin/DesktopVideoHelper
   '';
 

@@ -2,13 +2,13 @@
 
 stdenv.mkDerivation rec {
   pname = "decklink";
-  major = "12.2";
-  version = "${major}a12";
+  major = "12.4.1";
+  version = "${major}a15";
 
   src = requireFile {
     name = "Blackmagic_Desktop_Video_Linux_${major}.tar.gz";
-    url = "https://www.blackmagicdesign.com/support/download/33abc1034cd54cf99101f9acd2edd93d/Linux";
-    sha256 = "62954a18b60d9040aa4a959dff30ac9c260218ef78d6a63cbb243788f7abc05f";
+    url = "https://www.blackmagicdesign.com/support/download/17722a6d499b4431a31f29b32a937656/Linux";
+    sha256 = "d5363b15d305e5484fa62af16b1bd11a296746442dc82c4481d5b193bbbabf3e";
   };
 
   KERNELDIR = "${kernel.dev}/lib/modules/${kernel.modDirVersion}/build";
