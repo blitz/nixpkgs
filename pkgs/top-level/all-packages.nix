@@ -28952,6 +28952,7 @@ with pkgs;
     withResolved = false;
     withShellCompletions = false;
     withSysupdate = false;
+    withSysusers = false;
     withTimedated = false;
     withTimesyncd = false;
     withTpm2Tss = false;
