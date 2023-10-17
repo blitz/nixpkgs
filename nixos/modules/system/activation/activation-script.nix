@@ -252,7 +252,7 @@ in
         rmdir --ignore-fail-on-non-empty /usr/bin /usr
       '';
 
-    system.activationScripts.specialfs =
+    system.activationScripts.specialfs = if (!config.boot.initrd.systemd.enable) then 
       ''
         specialMount() {
           local device="$1"
@@ -269,7 +269,7 @@ in
           mount -t "$fsType" -o "$options" "$device" "$mountPoint"
         }
         source ${config.system.build.earlyMountScript}
-      '';
+      '' else "";
 
     systemd.user = {
       services.nixos-activation = {
