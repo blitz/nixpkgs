@@ -7215,7 +7215,9 @@ with pkgs;
   cpcfs = callPackage ../tools/filesystems/cpcfs { };
 
   coreutils =  callPackage ../tools/misc/coreutils { };
-  coreutils-full = coreutils.override { minimal = false; };
+  coreutils-full = coreutils.override { minimal = false;
+                                        # XXX prevent bootstrap openssl to leak into the closure
+                                        inherit openssl; };
   coreutils-prefixed = coreutils.override { withPrefix = true; singleBinary = false; };
 
   corkscrew = callPackage ../tools/networking/corkscrew { };
@@ -8659,7 +8661,7 @@ with pkgs;
   gnupg24 = callPackage ../tools/security/gnupg/24.nix {
     pinentry = if stdenv.isDarwin then pinentry_mac else pinentry-gtk2;
   };
-  gnupg = gnupg24;
+  gnupg =  gnupg24;
 
   gnupg-pkcs11-scd = callPackage ../tools/security/gnupg-pkcs11-scd { };
 
@@ -28918,6 +28920,7 @@ with pkgs;
       enableMinimal = true;
       guiSupport = false;
     };
+    withImportd = false;
   };
   systemdMinimal = systemd.override {
     pname = "systemd-minimal";
@@ -28959,6 +28962,7 @@ with pkgs;
     withUserDb = false;
     withUkify = false;
     withBootloader = false;
+    udevOnly = true;
   };
   systemdStage1 = systemdMinimal.override {
     pname = "systemd-stage-1";
@@ -28968,6 +28972,7 @@ with pkgs;
     withKmod = true;
     withTpm2Tss = true;
     withRepart = true;
+    udevOnly = false;
   };
   systemdStage1Network = systemdStage1.override {
     pname = "systemd-stage-1-network";
