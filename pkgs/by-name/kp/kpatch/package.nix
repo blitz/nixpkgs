@@ -4,10 +4,10 @@ stdenv.mkDerivation (finalAttrs: {
   version = "0.9.9";
 
   src = fetchFromGitHub {
-    owner = "dynup";
+    owner = "blitz";
     repo = "kpatch";
-    rev = "v${finalAttrs.version}";
-    hash = "sha256-D3hCcjT0kHMmBHgMFFmFyP5hQrJJnLghoKbJ7chOZfs=";
+    rev = "nixos-fixes";
+    hash = "sha256-5O/4y5m63hc99zxOWM/U2Om9iO3R1nuHfoWzdcxH3Lo=";
   };
 
   nativeBuildInputs = [
@@ -36,11 +36,6 @@ stdenv.mkDerivation (finalAttrs: {
   enableParallelBuilding = true;
 
   outputs = [ "out" "man" ];
-
-  postPatch = ''
-    substituteInPlace kpatch-build/kpatch-build \
-      --replace 'die "Unsupported distribution"' 'echo "WARN: Skipping distro check..."'
-  '';
 
   postInstall = ''
     # Unused upstart service.
