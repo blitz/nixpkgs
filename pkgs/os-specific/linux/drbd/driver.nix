@@ -63,6 +63,11 @@ stdenv.mkDerivation rec {
        DRBD is a software-based, shared-nothing, replicated storage solution
        mirroring the content of block devices (hard disks, partitions, logical volumes, and so on) between hosts.
     '';
-    broken = lib.versionAtLeast kernel.version "6.8"; # wait until next DRBD release for 6.8 support https://github.com/LINBIT/drbd/issues/87#issuecomment-2059323084
+
+    # There is no kernel this currently successfully builds for.
+    #
+    # The next release might improve things:
+    # https://github.com/LINBIT/drbd/issues/87#issuecomment-2059323084
+    broken = true;
   };
 }
