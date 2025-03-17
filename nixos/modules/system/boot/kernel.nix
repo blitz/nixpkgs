@@ -24,6 +24,9 @@ in
       default = true;
     };
 
+    boot.kernel.externalBootloader = mkEnableOption
+      "minizations for an external bootloader. This removes kernel and initrd from the toplevel";
+
     boot.kernel.features = mkOption {
       default = {};
       example = literalExpression "{ debug = true; }";
@@ -320,6 +323,10 @@ in
 
         system.modulesTree = [ kernel ] ++ config.boot.extraModulePackages;
 
+        # The bootspec is linked into top-level and contains links to
+        # kernel and initrd.
+        boot.bootspec.enable = lib.mkIf config.boot.kernel.externalBootloader false;
+
         # Not required for, e.g., containers as they don't have their own kernel or initrd.
         # They boot directly into stage 2.
         system.systemBuilderArgs.kernelParams = config.boot.kernelParams;
@@ -337,17 +344,21 @@ in
               false
             fi
 
-            ln -s ${kernelPath} $out/kernel
-            ln -s ${config.system.modulesTree} $out/kernel-modules
-            ${optionalString (config.hardware.deviceTree.package != null) ''
-              ln -s ${config.hardware.deviceTree.package} $out/dtbs
+            ${if config.boot.kernel.externalBootloader then ''
+              cp --no-preserve=mode -rL ${config.system.modulesTree} $out/kernel-modules
+              rm -v $out/kernel-modules/${config.system.boot.loader.kernelFile}
+            '' else ''
+              ln -s ${config.system.modulesTree} $out/kernel-modules
+              ln -s ${kernelPath} $out/kernel
+
+              ${optionalString (config.hardware.deviceTree.package != null) ''
+                ln -s ${config.hardware.deviceTree.package} $out/dtbs
             ''}
 
-            echo -n "$kernelParams" > $out/kernel-params
-
-            ln -s ${initrdPath} $out/initrd
-
-            ln -s ${config.system.build.initialRamdiskSecretAppender}/bin/append-initrd-secrets $out
+              echo -n "$kernelParams" > $out/kernel-params
+              ln -s ${initrdPath} $out/initrd
+              ln -s ${config.system.build.initialRamdiskSecretAppender}/bin/append-initrd-secrets $out
+            ''}
 
             ln -s ${config.hardware.firmware}/lib/firmware $out/firmware
           '';
