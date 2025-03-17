@@ -105,7 +105,11 @@ in
       in
       name + versionInfix + triesInfix + ".efi";
 
-    system.build.uki = pkgs.runCommand config.system.boot.loader.ukiFile { } ''
+    system.build.uki = pkgs.runCommand config.system.boot.loader.ukiFile {
+      # The UKI is self-contained. We can drop references.
+      __structuredAttrs = true;
+      unsafeDiscardReferences.out = true;
+    } ''
       mkdir -p $out
       ${pkgs.buildPackages.systemdUkify}/lib/systemd/ukify build \
         --config=${cfg.configFile} \
