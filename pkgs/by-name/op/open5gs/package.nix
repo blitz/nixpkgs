@@ -63,11 +63,7 @@ stdenv.mkDerivation (finalAttrs: {
   };
 
   patches = [
-    (fetchpatch {
-      name = "CVE-2025-15528.patch";
-      url = "https://github.com/open5gs/open5gs/commit/98f76e98df35cd6a35e868aa62715db7f8141ac1.patch";
-      hash = "sha256-LTKiPU398qYsDZzU45nY0aw67u2R1ohUvEStzALjCeQ=";
-    })
+    ./CVE-2025-15528.patch
   ];
 
   nativeBuildInputs = [
