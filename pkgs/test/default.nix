@@ -249,6 +249,8 @@ in
 
   auto-patchelf-hook-relativize-rpath = callPackage ./auto-patchelf-hook-relativize-rpath { };
 
+  glibc-resolution-cache = callPackage ./glibc-resolution-cache { };
+
   # Accumulate all passthru.tests from arrayUtilities into a single attribute set.
   arrayUtilities = recurseIntoAttrs (
     concatMapAttrs (
